@@ -2,7 +2,6 @@ using Asp.Versioning;
 using JobCandidate.Data.Context;
 using JobCandidate.Data.DesignPattern.UnitOfWorkPattern;
 using JobCandidate.Service.Interfaces;
-using JobCandidate.Service.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -15,6 +14,8 @@ builder.Services.AddDbContext<JobCandidateDbContext>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICandidateService, CandidateService>();
+
+builder.Services.AddMemoryCache();
 
 // Add services to the container.
 builder.Services.AddControllers();

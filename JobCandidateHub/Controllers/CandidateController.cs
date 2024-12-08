@@ -16,7 +16,7 @@ namespace JobCandidateHub.Controllers
         {
             _candidateService = candidateService;
         }
-  
+
         [HttpPost]
         public async Task<IActionResult> AddOrUpdateCandidate([FromBody] Candidate candidate)
         {
@@ -24,8 +24,6 @@ namespace JobCandidateHub.Controllers
             {
                 return BadRequest();
             }
-
-
 
             if (!ModelState.IsValid)
             {
