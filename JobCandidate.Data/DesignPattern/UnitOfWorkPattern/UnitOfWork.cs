@@ -7,27 +7,42 @@ namespace JobCandidate.Data.DesignPattern.UnitOfWorkPattern
     {
         private readonly JobCandidateDbContext _jobCandidateDbContext;
         private readonly Dictionary<Type, object> _repositories = new();
+        private readonly object _lock = new();
 
         public UnitOfWork(JobCandidateDbContext jobCandidateDbContext)
         {
-            _jobCandidateDbContext = jobCandidateDbContext;
+            _jobCandidateDbContext = jobCandidateDbContext ?? throw new ArgumentNullException(nameof(jobCandidateDbContext));
         }
 
         public IGenericRepository<T> Repository<T>() where T : class
         {
-            if (_repositories.ContainsKey(typeof(T)))
+            var type = typeof(T);
+            if (_repositories.TryGetValue(type, out var repository))
             {
-                return _repositories[typeof(T)] as IGenericRepository<T>;
+                return (IGenericRepository<T>)repository!;
             }
 
-            var repository = new GenericRepository<T>(_jobCandidateDbContext);
-            _repositories.Add(typeof(T), repository);
-            return repository;
+            lock (_lock)
+            {                
+                if (!_repositories.TryGetValue(type, out repository))
+                {
+                    repository = new GenericRepository<T>(_jobCandidateDbContext);
+                    _repositories.Add(type, repository);
+                }
+            }
+
+            return (IGenericRepository<T>)repository!;
         }
 
-        public Task<int> CompleteAsync()
+
+        public async Task<int> CompleteAsync()
         {
-            throw new NotImplementedException();
+            return await _jobCandidateDbContext.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            _jobCandidateDbContext.Dispose();
         }
     }
 }

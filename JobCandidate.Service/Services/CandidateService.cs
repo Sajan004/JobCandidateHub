@@ -1,6 +1,7 @@
 ﻿using JobCandidate.Data.DesignPattern.RepositoryPattern;
 using JobCandidate.Data.DesignPattern.UnitOfWorkPattern;
 using JobCandidate.Domain.DomainClasses;
+using JobCandidate.Service.Helpers;
 using JobCandidate.Service.Interfaces;
 
 namespace JobCandidate.Service.Services
@@ -18,6 +19,11 @@ namespace JobCandidate.Service.Services
 
         public async Task<Candidate> AddOrUpdateCandidateAsync(Candidate candidate)
         {
+            if (!EmailHelper.IsValidEmail(candidate.Email))
+            {
+                throw new ArgumentException("Invalid email format.");
+            }
+
             var existingCandidate = (await _candidateRepository.GetAllAsync())
                 .FirstOrDefault(c => c.Email == candidate.Email);
 
