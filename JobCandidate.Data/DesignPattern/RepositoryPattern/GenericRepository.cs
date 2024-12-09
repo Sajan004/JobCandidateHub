@@ -1,5 +1,4 @@
-﻿
-using JobCandidate.Data.Context;
+﻿using JobCandidate.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobCandidate.Data.DesignPattern.RepositoryPattern

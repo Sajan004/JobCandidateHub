@@ -34,7 +34,6 @@ namespace JobCandidate.Data.DesignPattern.UnitOfWorkPattern
             return (IGenericRepository<T>)repository!;
         }
 
-
         public async Task<int> CompleteAsync()
         {
             return await _jobCandidateDbContext.SaveChangesAsync();
