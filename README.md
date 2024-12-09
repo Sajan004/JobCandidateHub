@@ -1,4 +1,4 @@
-### Technologies Used:
+### Technologies Used
 - .NET 8
 -  SQL Server
 -  Entity Framework Core (Code-First Approach) 
