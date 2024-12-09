@@ -47,13 +47,30 @@ builder.Services.AddApiVersioning(options =>
 
 var app = builder.Build();
 
+// Apply migrations and update the database
+using (var scope = app.Services.CreateScope())
+{
+    var service = scope.ServiceProvider;
+    var loggerFactory = service.GetRequiredService<ILoggerFactory>();
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<JobCandidateDbContext>();
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = loggerFactory.CreateLogger<Program>();
+        logger.LogError(ex, "An error occured during migration");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "JobCandidate API V1");    
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "JobCandidate API V1");
         options.RoutePrefix = "swagger"; // Set Swagger UI URL
     });
 }
